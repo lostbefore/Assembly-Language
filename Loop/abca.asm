@@ -1,37 +1,35 @@
 .MODEL SMALL
 .STACK 100h
 .DATA
-    newline DB 0Dh, 0Ah, '$'    ; 换行符（回车+换行）
+    newline DB 0Dh, 0Ah, '$'    
 
 .CODE
 main PROC
-    MOV AX, @DATA               ; 初始化数据段寄存器
+    MOV AX, @DATA                  
     MOV DS, AX
 
-    MOV CX, 26                  ; CX = 26, 循环 26 次，输出 a-z
-    MOV AL, 'a'                 ; AL 初始值为 'a'
-    MOV BX, 13                  ; BX = 13，每行输出13个字符
+    MOV CX, 26                  
+    MOV AL, 'a'                 
+    MOV BX, 13                  
 
-print_loop:
-    MOV DL, AL                  ; 将当前字符放入 DL
-    MOV AH, 2                   ; DOS 中断 21h 的功能号 2：显示字符
-    INT 21h                     ; 调用 DOS 中断输出字符
+L:
+    MOV DL, AL                  
+    MOV AH, 2                   
+    INT 21h                     
 
-    INC AL                      ; AL 加 1，指向下一个字母
-    DEC BX                      ; 每输出一个字符，BX 减 1
-    JNZ continue_print          ; 如果还没到13个，继续输出
+    INC AL                      
+    DEC BX                      
+    JNZ continue_print          
 
-    ; 输出换行符
-    MOV AH, 9                   ; DOS 中断 21h 的功能号 9：显示字符串
-    LEA DX, newline             ; 输出换行符
+    MOV AH, 9                   
+    LEA DX, newline             
     INT 21h
 
-    MOV BX, 13                  ; 重置 BX 为 13，开始新的一行
+    MOV BX, 13                  
 
-continue_print:
-    LOOP print_loop             ; 继续循环，直到 CX = 0
+    LOOP L             
 
-    MOV AH, 4Ch                 ; DOS 中断 21h 的功能号 4Ch：程序退出
-    INT 21h                     ; 调用 DOS 中断退出程序
+    MOV AH, 4Ch                 
+    INT 21h                     
 main ENDP
 END main
